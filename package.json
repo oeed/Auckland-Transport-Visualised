@@ -2,7 +2,8 @@
   "name": "at-visualised",
   "version": "",
   "scripts": {
-    "watch": "cd server && tsc-watch --onSuccess 'node --experimental-modules ./lib/app.js'"
+    "watch": "cd server && tsc-watch --onSuccess 'node --experimental-modules ./lib/app.js'",
+    "build-server": "cd server && tsc"
   },
   "devDependencies": {
     "@types/node-fetch": "^2.1.1",
