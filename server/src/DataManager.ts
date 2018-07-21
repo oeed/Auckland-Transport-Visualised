@@ -15,7 +15,10 @@ export const refreshAllEntities = async () => {
 
 export const refreshSnapshots = async () => {
 	const tripEntities: { [index: string]: [APITripUpdate | undefined, APIVehiclePosition | undefined]  } = {}
-	for (const entity of (await getUpdatesAndPositions()).response.entity) {
+	console.log("download")
+	const response = (await getUpdatesAndPositions()).response
+	console.log("downloaded")
+	for (const entity of response.entity) {
 		if (entity.vehicle) {
 			const tripId = entity.vehicle.trip.trip_id
 			if (!tripEntities[tripId]) {
@@ -49,7 +52,10 @@ export const refreshSnapshots = async () => {
 		}
 	}
 	
+	console.log("start promises")
 	const snapshots = await Promise.all(snapshotPromises)
+	console.log("start save")
 	await VehicleSnapshot.saveMany(snapshots.filter(([snapshot, isNew]) => isNew).map(([snapshot]) => snapshot))
+	console.log("done")
 	return snapshots
 }
