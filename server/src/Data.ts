@@ -3,6 +3,7 @@ import { APIAgency } from "./entities/Agency"
 import { APIRoute } from "./entities/Route";
 import { APITripUpdate, APIVehiclePosition, APIServiceAlert } from "./entities/VehicleSnapshot";
 // import { APITrip } from "./entities/Trip";
+require('dotenv').load()
 
 const KEY = process.env["AT_API_KEY"]
 if (!KEY) {
