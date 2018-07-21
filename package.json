@@ -1,0 +1,19 @@
+{
+  "name": "at-visualised",
+  "version": "",
+  "scripts": {
+    "watch": "cd server && tsc-watch --onSuccess 'node --experimental-modules ./lib/app.js'"
+  },
+  "devDependencies": {
+    "@types/node-fetch": "^2.1.1",
+    "tsc-watch": "^1.0.23",
+    "tslint-react": "^3.6.0",
+    "typescript": "^2.9.2"
+  },
+  "dependencies": {
+    "dotenv": "^6.0.0",
+    "node-fetch": "^2.1.2",
+    "reflect-metadata": "^0.1.12",
+    "typeorm": "^0.2.7"
+  }
+}

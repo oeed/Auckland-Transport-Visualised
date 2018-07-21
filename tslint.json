@@ -1,0 +1,64 @@
+{
+  "extends": ["tslint-config-airbnb", "tslint:latest", "tslint-react"],
+  "rules": {
+    // override tslint-react rules here
+    "jsx-curly-spacing": [true, "always"],
+    "jsx-equals-spacing": [true, "never"],
+    "no-implicit-dependencies": false,
+    "semicolon": [true, "never"],
+    "member-access": false,
+    "eofline": false,
+    "import-name": false,
+    "no-submodule-imports": false,
+    "jsx-no-multiline-js": false,
+    "trailing-comma": [true, {"multiline": "never", "singleline": "never"}],
+    "interface-name": [true, "never-prefix"],
+    "no-increment-decrement": false,
+    "object-literal-sort-keys": false,
+    "no-this-assignment": false,
+    "no-unused-variable": true,
+    "triple-equals": false,
+    "jsx-no-lambda": false,
+    "array-type": [true, "array"],
+    "max-line-length": false,
+    "max-classes-per-file": false,
+    "radix": false,
+    "one-line": false,
+    "ter-arrow-parens": false,
+    "no-else-after-return": false,
+    "arrow-parens": false,
+    "no-namespace": false,
+    "object-literal-shorthand": true,
+    "object-shorthand-properties-first": false,
+    "member-ordering": [
+      true,
+      {
+        "order": [
+          "public-static-field",
+          "public-instance-field",
+          "protected-instance-field",
+          "private-instance-field",
+          "public-constructor",
+          "protected-constructor",
+          "private-constructor",
+          "public-instance-method",
+          "protected-instance-method",
+          "private-instance-method",
+          "public-static-method",
+          "protected-static-field",
+          "protected-static-method",
+          "private-static-field",
+          "private-static-method"
+        ]
+      }
+    ],
+    "brace-style": [
+      true,
+      "stroustrup",
+      {
+        "allowSingleLine": true
+      }
+    ],
+    "jsx-wrap-multiline": false
+  }
+}
