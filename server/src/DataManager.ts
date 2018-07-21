@@ -5,9 +5,15 @@ import { Route } from "./entities/Route";
 import { VehicleSnapshot, APITripUpdate, APIVehiclePosition } from "./entities/VehicleSnapshot";
 
 export const refreshAllEntities = async () => {
-
-	const agencies = await Promise.all((await getAgencies()).response.map(apiAgency => Agency.fromAPI(apiAgency)))
-	const routes = await Promise.all((await getRoutes()).response.map(apiRoute => Route.fromAPI(apiRoute)))
+	console.log('fetch agency')
+	const agencyResponse = await getAgencies()
+	console.log('save agency')
+	const agencies = await Promise.all(agencyResponse.response.map(apiAgency => Agency.fromAPI(apiAgency)))
+	console.log('fetch route')
+	const routeResponse = await getRoutes()
+	console.log('save route')
+	const routes = await Promise.all(routeResponse.response.map(apiRoute => Route.fromAPI(apiRoute)))
+	console.log('done')
 	// const trips = (await getTrips()).response.map(apiTrip => Trip.fromAPI(apiTrip))
 	// index = Trip.id
 }
