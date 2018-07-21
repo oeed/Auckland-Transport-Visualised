@@ -11,8 +11,10 @@ export const refreshAllEntities = async () => {
 	const agencies = await Promise.all(agencyResponse.response.map(apiAgency => Agency.fromAPI(apiAgency)))
 	console.log('fetch route')
 	const routeResponse = await getRoutes()
+	console.log('create route')
+	const routes = await Promise.all(routeResponse.response.map(apiRoute => Route.fromAPI(apiRoute, false)))
 	console.log('save route')
-	const routes = await Promise.all(routeResponse.response.map(apiRoute => Route.fromAPI(apiRoute)))
+	await Route.saveMany(routes)
 	console.log('done')
 	// const trips = (await getTrips()).response.map(apiTrip => Trip.fromAPI(apiTrip))
 	// index = Trip.id

@@ -46,14 +46,17 @@ export class Route {
     @OneToMany(type => Trip, trip => trip.route)
     trips: Trip[]
 
-	static async fromAPI(data: APIRoute) {
+	static async fromAPI(data: APIRoute, save = true) {
 		const model = await getRepository(Route).findOne(data.route_id) || new Route()
 		model.id = data.route_id
 		model.number = data.route_short_name
 		model.name = data.route_long_name
 		model.type = data.route_type
 		model.agency = await Agency.fromIDOrFail(data.agency_id)
-		return await model.save()
+		if (save) {
+			await model.save()
+		}
+		return model
 	}
 
 	static async fromID(id: string) {
@@ -67,6 +70,10 @@ export class Route {
 
 	async save() {
 		return await getRepository(Route).save(this)
+	}
+
+	static async saveMany(routes: Route[]) {
+		return await getRepository(Route).save(routes)
 	}
 
 }
