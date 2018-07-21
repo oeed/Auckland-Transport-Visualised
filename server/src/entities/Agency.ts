@@ -11,6 +11,8 @@ export interface APIAgency {
 	agency_fare_url: string // null
 }
 
+const cache: { [index: string]: Agency } = {}
+
 @Entity()
 export class Agency {
 
@@ -28,21 +30,40 @@ export class Agency {
 		model.id = data.agency_id
 		model.name = data.agency_name
 		await model.save()
+		model.saveToCache()
 		return model
 	}
 
 	static async fromID(id: string) {
-		// TODO: probably cache these
-		return await getRepository(Agency).findOne(id)
+		const cached = cache[id]
+		if (cached) {
+			return cached
+		}
+
+		const agency = await getRepository(Agency).findOne(id)
+		if (agency) {
+			agency.saveToCache()
+		}
+		return agency
 	}
 
 	static async fromIDOrFail(id: string) {
-		// TODO: probably cache these
-		return await getRepository(Agency).findOneOrFail(id)
+		const cached = cache[id]
+		if (cached) {
+			return cached
+		}
+
+		const agency = await getRepository(Agency).findOneOrFail(id)
+		agency.saveToCache()
+		return agency
 	}
 
 	async save() {
 		await getRepository(Agency).save(this)
+	}
+
+	saveToCache() {
+		cache[this.id] = this
 	}
 
 }
