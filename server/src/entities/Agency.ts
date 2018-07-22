@@ -1,5 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn, PrimaryColumn, getRepository, OneToMany } from "typeorm";
+import { Entity as DatabaseEntity, Column, PrimaryGeneratedColumn, PrimaryColumn, getRepository, OneToMany } from "typeorm";
 import { Route } from "./Route";
+import Entity from "./Entity";
 
 export interface APIAgency {
 	agency_id: string // 'NZBGW',
@@ -11,10 +12,8 @@ export interface APIAgency {
 	agency_fare_url: string // null
 }
 
-const cache: { [index: string]: Agency } = {}
-
-@Entity()
-export class Agency {
+@DatabaseEntity()
+export class Agency extends Entity {
 
     @PrimaryColumn()
     id: string
@@ -26,44 +25,12 @@ export class Agency {
     routes: Route[]
 
 	static async fromAPI(data: APIAgency) {
-		const model = await Agency.fromID(data.agency_id) || new Agency()
+		const model = await Agency.fromID<Agency>(data.agency_id) || new Agency()
 		model.id = data.agency_id
 		model.name = data.agency_name
 		await model.save()
 		model.saveToCache()
 		return model
-	}
-
-	static async fromID(id: string) {
-		const cached = cache[id]
-		if (cached) {
-			return cached
-		}
-
-		const agency = await getRepository(Agency).findOne(id)
-		if (agency) {
-			agency.saveToCache()
-		}
-		return agency
-	}
-
-	static async fromIDOrFail(id: string) {
-		const cached = cache[id]
-		if (cached) {
-			return cached
-		}
-
-		const agency = await getRepository(Agency).findOneOrFail(id)
-		agency.saveToCache()
-		return agency
-	}
-
-	async save() {
-		await getRepository(Agency).save(this)
-	}
-
-	saveToCache() {
-		cache[this.id] = this
 	}
 
 }

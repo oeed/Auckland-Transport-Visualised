@@ -1,6 +1,7 @@
-import { Entity, Column, PrimaryGeneratedColumn, PrimaryColumn, getRepository, ManyToOne, OneToMany } from "typeorm";
+import { Entity as DatabaseEntity, Column, PrimaryGeneratedColumn, PrimaryColumn, getRepository, ManyToOne, OneToMany } from "typeorm";
 import { Agency } from "./Agency";
 import { Trip } from "./Trip";
+import Entity from "./Entity";
 
 export enum RouteType {
 	tram = 0, // Any light rail or street level system within a metropolitan area.
@@ -25,8 +26,8 @@ export interface APIRoute {
 	route_text_color: string | null // null
 }
 
-@Entity()
-export class Route {
+@DatabaseEntity()
+export class Route extends Entity {
 
     @PrimaryColumn()
     id: string
@@ -47,33 +48,16 @@ export class Route {
     trips: Trip[]
 
 	static async fromAPI(data: APIRoute, save = true) {
-		const model = await getRepository(Route).findOne(data.route_id) || new Route()
+		const model = await this.fromID<Route>(data.route_id) || new Route()
 		model.id = data.route_id
 		model.number = data.route_short_name
 		model.name = data.route_long_name
 		model.type = data.route_type
-		model.agency = await Agency.fromIDOrFail(data.agency_id)
+		model.agency = await Agency.fromIDOrFail<Agency>(data.agency_id)
 		if (save) {
 			await model.save()
 		}
 		return model
-	}
-
-	static async fromID(id: string) {
-		return await getRepository(Route).findOne(id)
-	}
-
-	static async fromIDOrFail(id: string) {
-		// TODO: probably cache these
-		return await getRepository(Route).findOneOrFail(id)
-	}
-
-	async save() {
-		return await getRepository(Route).save(this)
-	}
-
-	static async saveMany(routes: Route[]) {
-		return await getRepository(Route).save(routes)
 	}
 
 }

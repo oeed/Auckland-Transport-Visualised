@@ -1,6 +1,7 @@
-import { Entity, Column, PrimaryGeneratedColumn, PrimaryColumn, getRepository, OneToMany, ManyToOne, Index, Unique } from "typeorm";
+import { Entity as DatabaseEntity, Column, PrimaryGeneratedColumn, PrimaryColumn, getRepository, OneToMany, ManyToOne, Index, Unique } from "typeorm";
 import { Route } from "./Route";
 import { Trip } from "./Trip";
+import Entity from "./Entity";
 
 export enum OccupancyStatus {
 	// The vehicle is considered empty by most measures, and has few or no
@@ -103,9 +104,9 @@ export interface APIServiceAlert {
 	timestamp: string
 }
 
-@Entity()
+@DatabaseEntity()
 @Unique(["positionId", "updateId"])
-export class VehicleSnapshot {
+export class VehicleSnapshot extends Entity {
 
     @PrimaryGeneratedColumn()
     id: string
@@ -162,7 +163,7 @@ export class VehicleSnapshot {
 		model.vehicleId = update.trip_update.vehicle.id
 		model.startTime = update.trip_update.trip.start_time
 		model.time = new Date(Math.max(update.trip_update.timestamp, position.vehicle.timestamp ) * 1000)
-		model.trip =  await Trip.fromID(update.trip_update.trip.trip_id, await Route.fromIDOrFail(update.trip_update.trip.route_id))
+		model.trip =  await Trip.fromIDRoute(update.trip_update.trip.trip_id, await Route.fromIDOrFail<Route>(update.trip_update.trip.route_id))
 		model.latitude = position.vehicle.position.latitude
 		model.longitude = position.vehicle.position.longitude
 
@@ -180,24 +181,6 @@ export class VehicleSnapshot {
 	static async fromUpdatePositionIDs(updateId: string, positionId: string) {
 		// TODO: probably cache these
 		return await getRepository(VehicleSnapshot).findOne({ where: { updateId, positionId } })
-	}
-
-	static async fromID(id: string) {
-		// TODO: probably cache these
-		return await getRepository(VehicleSnapshot).findOne(id)
-	}
-
-	static async fromIDOrFail(id: string) {
-		// TODO: probably cache these
-		return await getRepository(VehicleSnapshot).findOneOrFail(id)
-	}
-
-	async save() {
-		return await getRepository(VehicleSnapshot).save(this)
-	}
-
-	static async saveMany(snapshots: VehicleSnapshot[]) {
-		return await getRepository(VehicleSnapshot).save(snapshots)
 	}
 
 }

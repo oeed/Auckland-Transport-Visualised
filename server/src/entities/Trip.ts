@@ -1,6 +1,7 @@
-import { Entity, Column, PrimaryGeneratedColumn, PrimaryColumn, getRepository, OneToMany, ManyToOne } from "typeorm";
+import { Entity as DatabaseEntity, Column, PrimaryGeneratedColumn, PrimaryColumn, getRepository, OneToMany, ManyToOne } from "typeorm";
 import { Route } from "./Route";
 import { VehicleSnapshot } from "./VehicleSnapshot";
+import Entity from "./Entity";
 
 /* export enum TripDirection {
 	inbound, // i.e. generally toward Britomart
@@ -21,8 +22,8 @@ export interface APITrip {
 
 // For now, for data model simplicity, we don't actually use the proper trip model, just a simplified version
 
-@Entity()
-export class Trip {
+@DatabaseEntity()
+export class Trip extends Entity {
 
     @PrimaryColumn()
 	id: string
@@ -33,22 +34,18 @@ export class Trip {
     @OneToMany(type => VehicleSnapshot, vehicleSnapshot => vehicleSnapshot.trip)
     vehicleSnapshots: VehicleSnapshot[]
 	
-	static async fromID(id: string, route: Route) {
+	static async fromIDRoute(id: string, route: Route) {
 		// TODO: probably cache these
-		const existing = await getRepository(Trip).findOne(id)
+		const existing = await this.fromID(id)
 		if (existing) {
-			return existing
+			return existing as Trip
 		}
 
 		const model = new Trip()
 		model.id = id
 		model.route = route
 		await model.save()
-		return model		
-	}
-
-	async save() {
-		await getRepository(Trip).save(this)
+		return model
 	}
 
 /* 
