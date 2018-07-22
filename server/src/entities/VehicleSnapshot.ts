@@ -144,7 +144,7 @@ export class VehicleSnapshot extends Entity {
     @Column("int", { nullable: true })
 	bearing?: number
 
-    @Column()
+    @Column({ nullable: true })
 	occupancyStatus: OccupancyStatus
 
 	// returns [VehicleSnapshot, isNew]

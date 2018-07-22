@@ -51,7 +51,7 @@ export class Route extends Entity {
 		const model = await this.fromID<Route>(data.route_id) || new Route()
 		model.id = data.route_id
 		model.number = data.route_short_name
-		model.name = data.route_long_name
+		model.name = data.route_long_name.replace("�","\n")
 		model.type = data.route_type
 		model.agency = await Agency.fromIDOrFail<Agency>(data.agency_id)
 		if (save) {
